@@ -1,0 +1,70 @@
+.upload_main_container{
+    background-image: url('../../images/bimg2.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    .upload_input_field{
+        //  background-color: black;
+        // background-image: linear-gradient(circle,#fe778c,#afedf8,#fdabb8,);
+        background-image: linear-gradient(60deg,#fe778c,#afedf8);
+        height: 500px;
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        border: none;
+        border-radius: 30px;
+        box-shadow: 10px 10px 8px #888888 ;
+
+
+        h3{
+           color: black;
+           margin: 30px;
+           padding: 3px;
+           font-weight: 600;
+           border-bottom: 3px solid black;
+        }
+
+        
+
+        input{
+            padding: 80px;
+            margin-bottom: 50px;
+        }
+
+        .custom-file-input::-webkit-file-upload-button {
+            visibility: hidden;
+            position: absolute; 
+            z-index: -1;
+            text-align: center !important;
+        }
+
+        button{
+            padding: 5px;
+            margin: 20px;
+            // background-image: linear-gradient(to right,rgb(51, 43, 43),rgb(226, 226, 139));
+            background-image: linear-gradient(to right,#e6e0e3,#afedf8);
+
+            color: black;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 10px 10px 8px #888888 ;
+        }
+    }
+}
+
+
+@media screen and (max-width:768px) {
+    .upload_input_field{
+        // margin-bottom: 150px;
+        margin: 0 30px 150px 30px;
+        padding: 100px;
+    }
+}

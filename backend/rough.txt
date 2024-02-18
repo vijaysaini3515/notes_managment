@@ -1,0 +1,167 @@
+app.post('/upload', upload.single('pdf'), async (req, res) => {
+  const client = await MongoClient.connect('mongodb://localhost:27017/library-managment');
+  const db = client.db('pdf');
+  const pdfCollection = db.collection('pdf');
+  const pdfFile = req.file.buffer;
+  await pdfCollection.insertOne({ pdfFile });
+  res.sendStatus(200);
+});
+
+
+app.get('/collection', async (req, res) => {
+  const client = await MongoClient.connect('mongodb://localhost:27017/library-managment');
+  const db = client.db(pdf);
+  const pdfCollection = db.collection('pdf');
+  const pdfFile = await pdfCollection.findOne();
+  res.send(pdfFile.pdfFile);
+});
+
+
+const fileSchema = new mongoose.Schema({
+  name: String,
+  data: Buffer,
+  contentType: String,
+});
+const File = mongoose.model('File', fileSchema);
+
+app.post('/upload', upload.single('file'), (req, res) => {
+  const newFile = new File({
+    name: req.file.originalname,
+    data: req.file.buffer,
+    contentType: req.file.mimetype,
+  });
+
+  newFile.save((err, file) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      res.send(file);
+    }
+  });
+});
+
+
+
+
+
+////////
+const express = require('express');
+const app = express();
+const cors = require('cors')
+
+require('./db/config')
+const User = require('./db/user')
+const File = require('./db/pdf')
+
+const fs = require('fs');
+const path = require('path');
+
+const multer = require('multer');
+
+
+
+
+
+app.use(express.json());
+app.use(cors());
+
+
+//Sign_up_api
+
+app.post('/signup',async(req,resp)=>{
+  let user = new User(req.body);
+  let result = await user.save(); 
+  result = result.toObject();
+  delete result.password;
+    resp.send(result);
+});
+
+//Log_in_api
+
+app.post('/login',async(req,resp)=>{
+  console.log(req.body)
+  if(req.body.email && req.body.password){
+    let user = await User.findOne(req.body).select("-password");
+   if(user){
+   resp.send(user);
+  }else{
+    resp.status(404).send({message:"User Not Found"});
+  }
+  }else{
+    resp.status(404).send({message:"Enter valid fild"});
+  }
+  
+});
+
+
+
+
+//Upload_api_dierect_to_upload_folder
+
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, 'uploads'),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+// Set up multer with the storage configuration
+const upload = multer({ storage });
+
+
+//Upload_to_the_Server
+
+app.post('/api/upload', upload.single('file'), async(req, res) => {
+  try {
+    const { originalname, path } = req.file;
+
+    // Save the file to MongoDB
+    const file = new File({ name: originalname, path: path });
+    await file.save();
+
+    res.json({ message: 'File uploaded successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error uploading file' });
+  }
+});
+
+
+//get_files_from_upload_folder_api
+app.get('/api/files', (req, res) => {
+  const uploadsFolder = path.join(__dirname, 'uploads');
+
+  fs.readdir(uploadsFolder, (err, files) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error reading files');
+    } else {
+      const pdfFiles = files.filter((file) => path.extname(file) === '.pdf');
+      const fileData = [];
+
+      pdfFiles.forEach((file) => {
+        const filePath = path.join(uploadsFolder, file);
+        const data = fs.readFileSync(filePath);
+
+        fileData.push({
+          name: file,
+          data: data.toString('base64'),
+        });
+      });
+
+      res.json(fileData);
+    }
+  });
+});
+
+
+
+
+app.listen(5000);
+
+
+
+
+

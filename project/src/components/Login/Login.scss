@@ -1,0 +1,82 @@
+.main_container{
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../../images/bk.jpeg");
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.main_box{
+    width: 70%;
+    height: 80%;
+    background-color:#fff;
+    border-radius: 10px;
+    opacity: 0.80;
+    display: grid;
+    outline: 2px solid black;
+}
+
+.left_box img{
+    width: 100%; /* or any custom size */
+    height: 85%; 
+    padding: 10px;
+    border-radius: 20px;
+
+}
+
+
+.right_box{
+  margin-top: 100px;
+}
+
+.inputFilds{
+ 
+    /* margin-top: 100px; */
+    padding: 20px;
+    margin: 30px;
+    
+}
+
+.inputFilds input{
+    width: 100%;
+    margin: 3px;
+    background-color: #ffff;
+    padding: 5px;
+    outline: 0;
+    border: 0;
+    border-bottom: 2px solid black;
+    color: black;
+    font-weight: 500;
+    font-size: 20px;
+    
+}
+
+.inputFilds button{
+    width: 100%;
+    margin: 3px;
+    background-color: #9fe6df;
+    padding: 5px;
+    margin-top: 20px;
+    font-size: 20px;
+    color: black;
+}
+
+
+
+@media screen and (max-width:768px) {
+    .left_box{
+       grid-template-columns: 100%;
+    }
+    .right_box{
+        grid-template-columns: 100%;
+    }
+    .inputFilds{
+        margin-top: -100%;
+    }
+    .left_box img{
+        height: 60%;
+    }
+}

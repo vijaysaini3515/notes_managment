@@ -1,0 +1,100 @@
+app.post('/upload', upload.single('pdf'), async (req, res) => {
+  const client = await MongoClient.connect('mongodb://localhost:27017/library-managment');
+  const db = client.db('pdf');
+  const pdfCollection = db.collection('pdf');
+  const pdfFile = req.file.buffer;
+  await pdfCollection.insertOne({ pdfFile });
+  res.sendStatus(200);
+});
+
+
+app.get('/collection', async (req, res) => {
+  const client = await MongoClient.connect('mongodb://localhost:27017/library-managment');
+  const db = client.db(pdf);
+  const pdfCollection = db.collection('pdf');
+  const pdfFile = await pdfCollection.findOne();
+  res.send(pdfFile.pdfFile);
+});
+
+
+const fileSchema = new mongoose.Schema({
+  name: String,
+  data: Buffer,
+  contentType: String,
+});
+const File = mongoose.model('File', fileSchema);
+
+app.post('/upload', upload.single('file'), (req, res) => {
+  const newFile = new File({
+    name: req.file.originalname,
+    data: req.file.buffer,
+    contentType: req.file.mimetype,
+  });
+
+  newFile.save((err, file) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      res.send(file);
+    }
+  });
+});
+
+// get_allPdfs_api
+
+app.get('/upload/file/', async(req, res) => {
+  try {
+    const items = await File.find({});
+    res.json(items);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error retrieving items');
+  }
+});
+
+
+//input file a.i field
+{/* <input type="file" accept=".pdf" onChange={handleFileChange} /> */}
+
+
+
+
+/////upload
+<div className="upload_main_container">  
+         <div className="upload_input_field">
+           <h3 className="text-center">Upload Pdf File</h3>           
+           <input class="form-control custom-file-input" type="file" id="formFile" accept=".pdf" onChange={handleFileChange}></input>
+           <button onClick={handleFileUpload}>Upload</button>
+           <ToastContainer />
+        </div> 
+
+
+        const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleFileUpload = () => {
+   
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      fetch('http://localhost:5000/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('File uploaded successfully:', data);
+        })
+        .catch((error) => {
+          console.error('Error uploading file:', error);
+        });
+    }
+    toast.success('file upload successfully !', {
+      position: toast.POSITION.TOP_RIGHT
+  });
+  };

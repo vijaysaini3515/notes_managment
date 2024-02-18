@@ -1,0 +1,81 @@
+app.post('/upload', upload.single('pdf'), async (req, res) => {
+  const client = await MongoClient.connect('mongodb://localhost:27017/library-managment');
+  const db = client.db('pdf');
+  const pdfCollection = db.collection('pdf');
+  const pdfFile = req.file.buffer;
+  await pdfCollection.insertOne({ pdfFile });
+  res.sendStatus(200);
+});
+
+
+app.get('/collection', async (req, res) => {
+  const client = await MongoClient.connect('mongodb://localhost:27017/library-managment');
+  const db = client.db(pdf);
+  const pdfCollection = db.collection('pdf');
+  const pdfFile = await pdfCollection.findOne();
+  res.send(pdfFile.pdfFile);
+});
+
+
+const fileSchema = new mongoose.Schema({
+  name: String,
+  data: Buffer,
+  contentType: String,
+});
+const File = mongoose.model('File', fileSchema);
+
+app.post('/upload', upload.single('file'), (req, res) => {
+  const newFile = new File({
+    name: req.file.originalname,
+    data: req.file.buffer,
+    contentType: req.file.mimetype,
+  });
+
+  newFile.save((err, file) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      res.send(file);
+    }
+  });
+});
+
+
+
+
+//
+.nav_container{
+        height: 40px;
+    .link{
+        display: none;
+    }
+  .mobile_menu_icon{
+    display: block;
+    position: absolute;
+    font-size: 20px;
+    border: none;
+    outline: none;
+    margin: 3px;
+    background-color: black;
+    color: white;
+  }
+  .nav_mobile{
+    display: flex;
+    flex-direction: column;
+    width: 100vh;
+    // position: absolute;
+    // left: 0;
+    // top: 75px;
+    // height: 50px;
+    // width: 100vh;
+  }
+
+  .select_section{
+    background-color:black;
+    color:white;
+    border: 0;
+    outline: 0;
+}
+  
+}
